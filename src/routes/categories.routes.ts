@@ -1,31 +1,28 @@
 import { Router } from 'express'
 import multer from 'multer'
 
-import createCategoryController from '../modules/cars/controllers/category/createCategory'
-import { listCategoriesController } from '../modules/cars/controllers/category/listCategories'
-import { uploadCoverUploadController } from '../modules/cars/controllers/category/uploadCoverCategory'
-import { importCategoryController } from '../modules/cars/controllers/category/importCategory'
+import { CreateCategoryController } from '../modules/cars/controllers/category/createCategory/CreateCategoryController'
+import { ImportCategoryController } from '../modules/cars/controllers/category/importCategory/ImportCategoryController'
+import { ListCategoriesController } from '../modules/cars/controllers/category/listCategories/ListCategoriesController'
+
 
 const categoriesRoutes = Router()
 
 const upload = multer({ dest: './tmp'})
 
-categoriesRoutes.post('/', (request, response) => {    
-    console.log("testess")
-    return createCategoryController().handle(request, response)
-})
+const createCategoryController = new CreateCategoryController()
+const importCategoryController = new ImportCategoryController()
+const listCategoriesController = new ListCategoriesController()
 
-categoriesRoutes.get('/', (request, response) => {
-    return listCategoriesController.handle(request, response)
-})
+categoriesRoutes.post('/', createCategoryController.handle)
 
-categoriesRoutes.post('/upload', upload.single('file'), (request, response) => {
-    return uploadCoverUploadController.handle(request, response)    
-})
+categoriesRoutes.get('/', listCategoriesController.handle)
 
-categoriesRoutes.post('/import', upload.single('file'), (request, response) => {
-    return importCategoryController.handle(request, response)    
-})
+categoriesRoutes.post('/import', upload.single('file'), importCategoryController.handle)
+
+// categoriesRoutes.post('/upload', upload.single('file'), (request, response) => {
+//     return uploadCoverUploadController.handle(request, response)    
+// })
 
 
 export { categoriesRoutes }

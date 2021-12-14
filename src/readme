@@ -1,0 +1,7 @@
+- criar migration
+- criar entity
+- criar repository
+- criar useCase
+- criar Controller
+- implementar injeção de dependencia
+- criar route

@@ -3,7 +3,8 @@ import { Column, CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn
 
 @Entity("categories")
 export class Category {
-    @PrimaryGeneratedColumn("uuid")
+    // @PrimaryGeneratedColumn("uuid")
+    @PrimaryColumn()
     id?: string;
 
     @Column()
@@ -15,10 +16,10 @@ export class Category {
     @CreateDateColumn()
     created_at: Date;
 
-    // constructor() {
-    //     if(!this.id) {
-    //         this.id = uuidv4()
-    //     }
-    // }
+    constructor() {
+        if(!this.id) {
+            this.id = uuidv4()
+        }
+    }
 
 }
