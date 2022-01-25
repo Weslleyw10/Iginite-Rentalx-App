@@ -1,5 +1,5 @@
-import { User } from "../entities/User";
-import { IUserDTO } from "../dtos/IUserDTO";
+import { User } from "@modules/accounts/infra/typeorm/entities/User";
+import { IUserDTO } from "@modules/accounts/dtos/IUserDTO";
 
 interface IUserRepository {
     findByName(name: string): Promise<User>

@@ -1,5 +1,5 @@
-import { IUserDTO } from "../../dtos/IUserDTO";
-import { User } from "../../entities/User";
+import { IUserDTO } from "@modules/accounts/dtos/IUserDTO";
+import { User } from "@modules/accounts/infra/typeorm/entities/User";
 import { IUserRepository } from "../IUserRepository";
 
 export class UserRepositoryInMemory implements IUserRepository {

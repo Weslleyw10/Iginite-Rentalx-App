@@ -1,6 +1,6 @@
-import { ErrorHandle } from "../../../../../errors/ErrorHandle"
-import { IUserDTO } from "../../../dtos/IUserDTO"
-import { UserRepositoryInMemory } from "../../../repositories/in-memory/UserRepositoryInMemory"
+import { ErrorHandle } from "@shared/errors/ErrorHandle"
+import { IUserDTO } from "@modules/accounts/dtos/IUserDTO"
+import { UserRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UserRepositoryInMemory"
 
 import { CreateUserUseCase } from "../createUser/CreateUserUseCase"
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase"
