@@ -6,6 +6,7 @@ import { Rental } from "@modules/rentals/infra/typeorm/entities/Rental";
 import { IRentalsRepository } from "@modules/rentals/infra/typeorm/repositories/IRentalsRepository";
 import { ErrorHandle } from "@shared/errors/ErrorHandle";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
+import { ICarsRepository } from "@modules/cars/repositories/ICarsRepository";
 
 interface IRequest {
     user_id: string;
@@ -23,7 +24,10 @@ export class CreateRentalUseCase {
         private rentalsRepository: IRentalsRepository,
 
         @inject("DayjsDateProvider")
-        private dateProvider: IDateProvider
+        private dateProvider: IDateProvider,
+
+        @inject("CarsRepository")
+        private carsRepository: ICarsRepository
     ) {}
 
     async execute({
@@ -37,13 +41,13 @@ export class CreateRentalUseCase {
         const carUnavailable = await this.rentalsRepository.findByCar(car_id)
 
         if(carUnavailable) {
-            throw new ErrorHandle("Car is unavailable")
+            throw new ErrorHandle("Car is unavailable.")
         }
 
         const rentalOpenToUser = await this.rentalsRepository.findOpenRentalByUser(user_id)
 
         if(rentalOpenToUser) {
-            throw new ErrorHandle("There's a rental in progress for user!")
+            throw new ErrorHandle("There's a rental in progress for user.")
         }
 
         const compareDates = this.dateProvider.compareInHours(
@@ -60,6 +64,8 @@ export class CreateRentalUseCase {
             car_id,
             expected_return_date
         })
+
+        await this.carsRepository.updateStatus(car_id, false)
 
         return rental
 

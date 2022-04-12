@@ -1,7 +1,6 @@
 import { ICreateCarDto } from "@modules/cars/dtos/ICreateCarDto";
 import { Car } from "../infra/typeorm/entities/Car";
 
-
 export interface ICarsRepository {
     create(data: ICreateCarDto): Promise<Car>;
     findByLicensePlate(license_plate: string): Promise<Car>
@@ -11,4 +10,5 @@ export interface ICarsRepository {
         brand?: string,
         name?: string,
     ): Promise<Car[]>
+    updateStatus(id: string, available: boolean): Promise<void>
 }

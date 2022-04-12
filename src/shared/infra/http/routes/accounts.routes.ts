@@ -10,11 +10,13 @@ import { UpdateUserAvatarController } from '@modules/accounts/controllers/user/u
 const createUserController = new CreateUserController()
 const updateUserAvatarController = new UpdateUserAvatarController()
 
+
 const accountsRoutes = Router()
 
-const uploadAvatar = multer(uploadConfig.upload("./tmp/avatar"))
+const uploadAvatar = multer(uploadConfig)
 
 accountsRoutes.post('/user', createUserController.handle)
+
 accountsRoutes.patch(
     '/avatar',
     EnsureAuthenticated,

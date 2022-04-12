@@ -4,16 +4,29 @@ import { UserRepositoryInMemory } from "@modules/accounts/repositories/in-memory
 
 import { CreateUserUseCase } from "../createUser/CreateUserUseCase"
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase"
+import { UsersTokensRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersTokensRepositoryInMemory"
+import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayjsDateProvider"
 
 let authenticateUserUseCase: AuthenticateUserUseCase
 let usersRepositoryInMemory: UserRepositoryInMemory
 let createUserUseCase: CreateUserUseCase
+let usersTokensRepositoryInMemory: UsersTokensRepositoryInMemory
+let dateProvider: DayjsDateProvider
+
 
 describe("Authenticate User", () => {
     beforeEach(() => {
         usersRepositoryInMemory = new UserRepositoryInMemory()
-        authenticateUserUseCase = new AuthenticateUserUseCase(usersRepositoryInMemory)
+        usersTokensRepositoryInMemory = new UsersTokensRepositoryInMemory()
+        dateProvider = new DayjsDateProvider()
+
         createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory)
+        authenticateUserUseCase = new AuthenticateUserUseCase(
+            usersRepositoryInMemory,
+            usersTokensRepositoryInMemory,
+            dateProvider
+        )
+
     })
 
     it("Should be able to authenticate an user.", async () => {
@@ -35,13 +48,13 @@ describe("Authenticate User", () => {
     })
 
     it("Should not be able to authenticate an no exist user.", async () => {
-        expect(async () => {
-            await authenticateUserUseCase.execute({
+        await expect(
+            authenticateUserUseCase.execute({
                 email: "false@email.com",
                 password: "1234"
-            })
-        }).rejects.toBeInstanceOf(ErrorHandle)
-    })
+            })            
+        ).rejects.toEqual(new ErrorHandle("Email or password incorrect."))
+    })    
 
     it("Should not be able to authenticate with incorrect password.", async () => {
         const user: IUserDTO = {
@@ -53,13 +66,12 @@ describe("Authenticate User", () => {
 
         await createUserUseCase.execute(user)
 
-        expect(async () => {
-            await authenticateUserUseCase.execute({
+        await expect(
+            authenticateUserUseCase.execute({
                 email: user.email,
                 password: "falsePassword"
             })
-        }).rejects.toBeInstanceOf(ErrorHandle)
-        
+        ).rejects.toEqual(new ErrorHandle("Email or password incorrect."))        
     })
 
     it("Should not be able to authenticate with incorrect email.", async () => {
@@ -72,14 +84,12 @@ describe("Authenticate User", () => {
 
         await createUserUseCase.execute(user)
 
-        expect(async () => {
-            await authenticateUserUseCase.execute({
+        await expect(
+            authenticateUserUseCase.execute({
                 email: "false@email.com",
                 password: user.password
             })
-        }).rejects.toBeInstanceOf(ErrorHandle)
-
-        
+        ).rejects.toEqual(new ErrorHandle("Email or password incorrect."))    
     })
 
 
