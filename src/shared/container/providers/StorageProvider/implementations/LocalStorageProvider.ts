@@ -1,29 +1,33 @@
 import upload from "@config/upload";
-import fs from "fs"
-import { resolve } from "path"
+import fs from "fs";
+import { resolve } from "path";
+import "dotenv/config";
 
 import { IStorageProvider } from "../IStorageProvider";
 
-export class LocalStorageProvider implements IStorageProvider {
-    async save(file: string, folder: string): Promise<string> {
-        await fs.promises.rename(
-            resolve(upload.tmpFolder, file),
-            resolve(`${upload.tmpFolder}/${folder}`, file)
-        )
+class LocalStorageProvider implements IStorageProvider {
+  async save(file: string, folder: string): Promise<string> {
+    await fs.promises.rename(
+      resolve(upload.tmpFolder, file),
+      resolve(`${upload.tmpFolder}/${folder}`, file)
+    );
 
-        return file
+    console.log("tmpFolder", `${upload.tmpFolder}/${folder}`)
+
+    return file;
+  }
+  async delete(file: string, folder: string): Promise<void> {
+    const filename = resolve(`${upload.tmpFolder}/${folder}`, file);
+
+    try {
+      await fs.promises.stat(filename);
+    } catch (error) {
+      return;
     }
 
-    async delete(file: string, folder: string): Promise<void> {
-        const fileName = resolve(`${upload.tmpFolder}/${folder}`, file)
+    await fs.promises.unlink(filename);
 
-        try {
-            await fs.promises.stat(fileName)
-        } catch (err) {
-            return
-        }
-
-        await fs.promises.unlink(fileName)
-    }
+  }
 
 }
+export { LocalStorageProvider };
